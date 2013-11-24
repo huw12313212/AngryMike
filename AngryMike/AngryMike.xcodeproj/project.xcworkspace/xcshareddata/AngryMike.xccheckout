@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4EC731E8-539B-45B7-8F35-754A7019EFC5</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AngryMike</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>F34CF3C6-15F7-4B71-BCEB-22E2F98AACEB</key>
+		<string>https://github.com/huw12313212/AngryMike.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>AngryMike/AngryMike.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>F34CF3C6-15F7-4B71-BCEB-22E2F98AACEB</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/huw12313212/AngryMike.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>F34CF3C6-15F7-4B71-BCEB-22E2F98AACEB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F34CF3C6-15F7-4B71-BCEB-22E2F98AACEB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>GitAngryMike</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -54,35 +54,14 @@ enum {
 		
 		self.touchEnabled = YES;
 		self.accelerometerEnabled = YES;
-		CGSize s = [CCDirector sharedDirector].winSize;
 		
 		// init physics
 		[self initPhysics];
 		
-		// create reset button
-		[self createMenu];
-		
-		//Set up sprite
-		
-#if 1
-		// Use batch node. Faster
-		CCSpriteBatchNode *parent = [CCSpriteBatchNode batchNodeWithFile:@"Mike.png" capacity:100];
-		spriteTexture_ = [parent texture];
-#else
-		// doesn't use batch node. Slower
-		spriteTexture_ = [[CCTextureCache sharedTextureCache] addImage:@"blocks.png"];
-		CCNode *parent = [CCNode node];
-#endif
-		[self addChild:parent z:0 tag:kTagParentNode];
-		
-		
-		[self addNewSpriteAtPosition:ccp(s.width/2, s.height/2)];
-		
-		CCLabelTTF *label = [CCLabelTTF labelWithString:@"Tap screen" fontName:@"Marker Felt" fontSize:32];
-		[self addChild:label z:0];
-		[label setColor:ccc3(0,0,255)];
-		label.position = ccp( s.width/2, s.height-50);
-		
+
+		MikeTexture = [[CCTextureCache sharedTextureCache] addImage:@"Mike.png"];
+
+        
 		[self scheduleUpdate];
 	}
 	return self;
@@ -248,14 +227,10 @@ enum {
 	body->CreateFixture(&fixtureDef);
 	
 
-	CCNode *parent = [self getChildByTag:kTagParentNode];
-	
-	//We have a 64x64 sprite sheet with 4 different 32x32 images.  The following code is
-	//just randomly picking one of the images
-	//int idx = (CCRANDOM_0_1() > .5 ? 0:1);
-	//int idy = (CCRANDOM_0_1() > .5 ? 0:1);
-	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:spriteTexture_ rect:CGRectMake(0,0,55/2,72/2)];
-	[parent addChild:sprite];
+
+    
+	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:MikeTexture rect:CGRectMake(0,0,55/2,72/2)];
+	[self addChild:sprite];
 	
 	[sprite setPTMRatio:PTM_RATIO];
 	[sprite setB2Body:body];

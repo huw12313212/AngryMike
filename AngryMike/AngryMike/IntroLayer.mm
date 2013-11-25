@@ -41,7 +41,6 @@
 		CGSize size = [[CCDirector sharedDirector] winSize];
 
 
-        
         //setting label
         CCLabelTTF *label = [CCLabelTTF labelWithString:@"Angry Mike" fontName:@"Marker Felt" fontSize:32];
 		[label setColor:ccc3(254,222,143)];
@@ -120,7 +119,7 @@
         CCActionInterval* scaleUpAction = [CCScaleTo actionWithDuration:0.1 scale:1];
         [self.PlayButton runAction:scaleUpAction];
         
-        [[CCDirector sharedDirector] replaceScene:[CCTransitionFlipX transitionWithDuration:1.0 scene:[HelloWorldLayer scene]]];
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene]]];
     }
 }
 

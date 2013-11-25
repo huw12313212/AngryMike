@@ -23,10 +23,27 @@ enum {
 
 #pragma mark - HelloWorldLayer
 
+
+
 @interface HelloWorldLayer()
+{
+    CCTexture2D *MikeTexture;	// weak ref
+    CCTexture2D *BackGroundTexture; //
+    
+	b2World* world;					// strong ref
+	GLESDebugDraw *m_debugDraw;		// strong ref
+    
+    NSMutableArray* Mikes;
+    int MikeIndex;
+    bool MikeClicked;
+}
+
+
+
 -(void) initPhysics;
--(void) addNewSpriteAtPosition:(CGPoint)p;
+-(CCSprite*) addNewMikeAtPosition:(CGPoint)p;
 -(void) createMenu;
+
 @end
 
 @implementation HelloWorldLayer
@@ -50,8 +67,12 @@ enum {
 {
 	if( (self=[super init])) {
 		
+        MikeIndex = 0;
+        Mikes = [[NSMutableArray alloc]init];
+        MikeClicked = false;
+        
 		// enable events
-		
+			CGSize size = [[CCDirector sharedDirector] winSize];
 		self.touchEnabled = YES;
 		self.accelerometerEnabled = YES;
 		
@@ -60,7 +81,45 @@ enum {
 		
 
 		MikeTexture = [[CCTextureCache sharedTextureCache] addImage:@"Mike.png"];
-
+        
+        BackGroundTexture =[[CCTextureCache sharedTextureCache] addImage:@"Background.png"];
+        CCSprite* background = [CCSprite spriteWithTexture:BackGroundTexture];
+        
+        background.position = CGPointMake(size.width/2, size.height/2);//size/2 ; //size
+        [self addChild:background z:-1];
+        
+        
+        CCSprite* sling1 = [CCSprite spriteWithFile:@"sling1.png"];
+        CCSprite* sling2 = [CCSprite spriteWithFile:@"sling2.png"];
+        
+        [self addChild:sling1 z:2];
+        
+        [self addChild:sling2 z:0];
+        
+        sling1.position = CGPointMake(66, 155);
+        sling2.position = CGPointMake(71, 167);
+        
+        [self addNewMikeAtPosition:CGPointMake(SLING_POINT_X,SLING_POINT_Y)];
+        
+        [[self addNewMikeAtPosition:CGPointMake(44.5,146)] setRotation:40.0f];
+        
+        [[self addNewMikeAtPosition:CGPointMake(21.5,146)]setRotation: -22.0f];
+        
+        
+        
+        
+        
+        
+        CCMenuItemLabel *reset = [CCMenuItemFont itemWithString:@"Reset" block:^(id sender){
+            [[CCDirector sharedDirector] replaceScene: [CCTransitionFade transitionWithDuration:0.5f scene:[HelloWorldLayer scene]]];
+        }];
+        
+        reset.scale = 0.5f;
+        
+        CCMenu *menu = [CCMenu menuWithItems:reset, nil];
+        menu.position = CGPointMake(size.width - 50, size.height - 50);
+        [self addChild:menu];
+        
         
 		[self scheduleUpdate];
 	}
@@ -78,57 +137,6 @@ enum {
 	[super dealloc];
 }	
 
--(void) createMenu
-{
-	// Default font size will be 22 points.
-	[CCMenuItemFont setFontSize:22];
-	
-	// Reset Button
-	CCMenuItemLabel *reset = [CCMenuItemFont itemWithString:@"Reset" block:^(id sender){
-		[[CCDirector sharedDirector] replaceScene: [HelloWorldLayer scene]];
-	}];
-
-	// to avoid a retain-cycle with the menuitem and blocks
-	__block id copy_self = self;
-
-	// Achievement Menu Item using blocks
-	CCMenuItem *itemAchievement = [CCMenuItemFont itemWithString:@"Achievements" block:^(id sender) {
-		
-		
-		GKAchievementViewController *achivementViewController = [[GKAchievementViewController alloc] init];
-		achivementViewController.achievementDelegate = copy_self;
-		
-		AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-		
-		[[app navController] presentModalViewController:achivementViewController animated:YES];
-		
-		[achivementViewController release];
-	}];
-	
-	// Leaderboard Menu Item using blocks
-	CCMenuItem *itemLeaderboard = [CCMenuItemFont itemWithString:@"Leaderboard" block:^(id sender) {
-		
-		
-		GKLeaderboardViewController *leaderboardViewController = [[GKLeaderboardViewController alloc] init];
-		leaderboardViewController.leaderboardDelegate = copy_self;
-		
-		AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-		
-		[[app navController] presentModalViewController:leaderboardViewController animated:YES];
-		
-		[leaderboardViewController release];
-	}];
-	
-	CCMenu *menu = [CCMenu menuWithItems:itemAchievement, itemLeaderboard, reset, nil];
-	
-	[menu alignItemsVertically];
-	
-	CGSize size = [[CCDirector sharedDirector] winSize];
-	[menu setPosition:ccp( size.width/2, size.height/2)];
-	
-	
-	[self addChild: menu z:-1];	
-}
 
 -(void) initPhysics
 {
@@ -136,7 +144,7 @@ enum {
 	CGSize s = [[CCDirector sharedDirector] winSize];
 	
 	b2Vec2 gravity;
-	gravity.Set(0.0f, -10.0f);
+	gravity.Set(0.0f, -320/PTM_RATIO);
 	world = new b2World(gravity);
 	
 	
@@ -170,11 +178,20 @@ enum {
 	b2EdgeShape groundBox;		
 	
 	// bottom
+    
+    NSLog(@"%f,%f",s.width,s.height);
 	
-	groundBox.Set(b2Vec2(0,0), b2Vec2(s.width/PTM_RATIO,0));
+	groundBox.Set(b2Vec2(0.0f/PTM_RATIO,135.0f/PTM_RATIO), b2Vec2(76.0f/PTM_RATIO,135.0f/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
-	
-	// top
+
+	groundBox.Set(b2Vec2(152.0f/PTM_RATIO/2,(640.0f-370.0f)/PTM_RATIO/2), b2Vec2(152.0f/PTM_RATIO/2,(640.0f-610.0f)/PTM_RATIO/2));
+	groundBody->CreateFixture(&groundBox,0);
+
+	groundBox.Set(b2Vec2(152.0f/PTM_RATIO/2,(640.0f-610.0f)/PTM_RATIO/2), b2Vec2(959.0f/PTM_RATIO/2,(640.0f-610.0f)/PTM_RATIO/2));
+	groundBody->CreateFixture(&groundBox,0);
+    
+    
+    // top
 	groundBox.Set(b2Vec2(0,s.height/PTM_RATIO), b2Vec2(s.width/PTM_RATIO,s.height/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
 	
@@ -189,11 +206,6 @@ enum {
 
 -(void) draw
 {
-	//
-	// IMPORTANT:
-	// This is only for debug purposes
-	// It is recommend to disable it
-	//
 	[super draw];
 	
 	ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
@@ -205,53 +217,140 @@ enum {
 	kmGLPopMatrix();
 }
 
--(void) addNewSpriteAtPosition:(CGPoint)p
+
+
+-(CCSprite*) addNewMikeAtPosition:(CGPoint)p
 {
 	CCLOG(@"Add sprite %0.2f x %02.f",p.x,p.y);
 	// Define the dynamic body.
 	//Set up a 1m squared box in the physics world
 	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
+	bodyDef.type = b2_kinematicBody;
 	bodyDef.position.Set(p.x/PTM_RATIO, p.y/PTM_RATIO);
 	b2Body *body = world->CreateBody(&bodyDef);
 	
 	// Define another box shape for our dynamic body.
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox(.5f, .5f);//These are mid points for our 1m box
-	
+    
+	b2CircleShape dynamicMike;
+    dynamicMike.m_radius =10.0f/PTM_RATIO;
+
 	// Define the dynamic body fixture.
 	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicBox;	
+	fixtureDef.shape = &dynamicMike;	
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.3f;
 	body->CreateFixture(&fixtureDef);
 	
-
-
     
-	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:MikeTexture rect:CGRectMake(0,0,55/2,72/2)];
+	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:MikeTexture];
 	[self addChild:sprite];
 	
 	[sprite setPTMRatio:PTM_RATIO];
 	[sprite setB2Body:body];
 	[sprite setPosition: ccp( p.x, p.y)];
+    
+    [sprite setScale:0.8f];
+    
+    [Mikes addObject:sprite];
+    
+    return sprite;
 
 }
 
 -(void) update: (ccTime) dt
 {
-	//It is recommended that a fixed time step is used with Box2D for stability
-	//of the simulation, however, we are using a variable time step here.
-	//You need to make an informed choice, the following URL is useful
-	//http://gafferongames.com/game-physics/fix-your-timestep/
-	
 	int32 velocityIterations = 8;
 	int32 positionIterations = 1;
 	
-	// Instruct the world to perform a single step of simulation. It is
-	// generally best to keep the time step and iterations fixed.
 	world->Step(dt, velocityIterations, positionIterations);	
 }
+
+- (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    for( UITouch *touch in touches )
+    {
+        CGPoint location = [self convertTouchToNodeSpace: touch];
+        CCPhysicsSprite* currentMike =(CCPhysicsSprite*)Mikes[MikeIndex];
+        
+        if (CGRectContainsPoint(currentMike.boundingBox, location))
+        {
+            NSLog(@"clicked");
+            
+            MikeClicked = true;
+           // currentMike.b2Body->SetType(b2_dynamicBody);
+        }
+    }
+}
+
+
+- (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if(MikeClicked)
+    {
+        for( UITouch *touch in touches )
+        {
+         CCPhysicsSprite* currentMike =(CCPhysicsSprite*)Mikes[MikeIndex];
+        
+            
+            CGPoint location = [self convertTouchToNodeSpace: touch];
+            
+            
+            float distx = (location.x - SLING_POINT_X);
+            float disty = (location.y - SLING_POINT_Y);
+            
+            double dist = sqrt(distx * distx + disty * disty);
+             NSLog(@"%lf",dist);
+            
+            if(dist > SLING_RADIO)
+            {
+                float normalizeX = distx / dist;
+                float normalizeY = disty / dist;
+                
+                float newX = normalizeX*SLING_RADIO;
+                float newY = normalizeY*SLING_RADIO;
+                
+                 currentMike.position = CGPointMake(SLING_POINT_X+newX, SLING_POINT_Y+newY);
+                
+                NSLog(@"case1");
+            }
+            else
+            {
+                 NSLog(@"case2");
+                 currentMike.position = location;
+            }
+        
+       
+        }
+    }
+    
+    //    NSLog(@"here");
+    //
+    //
+    //
+    //        CGPoint touchLocation = [touch locationInView: [touch view]];
+    //        CGPoint prevLocation = [touch previousLocationInView: [touch view]];
+    //
+    //        touchLocation = [[CCDirector sharedDirector] convertToGL: touchLocation];
+    //        prevLocation = [[CCDirector sharedDirector] convertToGL: prevLocation];
+    //
+    //        CGPoint diff = ccpSub(touchLocation,prevLocation);
+    //
+    //        self.position  = ccpAdd(self.position,diff);
+    //        
+    //	}
+}
+
+-(void)LoadNewMike
+{
+    if(MikeIndex <2)
+    {
+        MikeIndex+=1;
+        
+        CCAction* action = [CCMoveTo actionWithDuration:0.5f position:CGPointMake(SLING_POINT_X, SLING_POINT_Y)];
+        [Mikes[MikeIndex] runAction:action];
+    }
+}
+
 
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
@@ -259,24 +358,28 @@ enum {
 	for( UITouch *touch in touches ) {
 		CGPoint location = [touch locationInView: [touch view]];
 		
-		location = [[CCDirector sharedDirector] convertToGL: location];
-		
-		[self addNewSpriteAtPosition: location];
+		if(MikeClicked)
+        {
+            CCPhysicsSprite* currentMike =(CCPhysicsSprite*)Mikes[MikeIndex];
+            currentMike.b2Body->SetType(b2_dynamicBody);
+            currentMike.b2Body->SetAwake(true);
+            //currentMike.b2Body->SetLinearVelocity(<#const b2Vec2 &v#>)
+
+            
+            CGPoint location = [self convertTouchToNodeSpace: touch];
+            
+            float distx = (location.x - SLING_POINT_X);
+            float disty = (location.y - SLING_POINT_Y);
+
+            
+            b2Vec2 v2 = b2Vec2(-distx,-disty);
+            currentMike.b2Body->SetLinearVelocity(v2);
+            
+            [self LoadNewMike];
+            
+            MikeClicked = false;
+        }
 	}
-}
-
-#pragma mark GameKit delegate
-
--(void) achievementViewControllerDidFinish:(GKAchievementViewController *)viewController
-{
-	AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-	[[app navController] dismissModalViewControllerAnimated:YES];
-}
-
--(void) leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
-{
-	AppController *app = (AppController*) [[UIApplication sharedApplication] delegate];
-	[[app navController] dismissModalViewControllerAnimated:YES];
 }
 
 @end

@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A42E31E1843667F00ABBAFC /* Background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A42E31D1843667F00ABBAFC /* Background@2x.png */; };
+		8A42E31E1843667F00ABBAFC /* Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A42E31D1843667F00ABBAFC /* Background.png */; };
 		8A42E32518437CA400ABBAFC /* sling1.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A42E32318437CA400ABBAFC /* sling1.png */; };
 		8A42E32618437CA400ABBAFC /* sling2.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A42E32418437CA400ABBAFC /* sling2.png */; };
 		8A9EFBD818425DEE0067BF14 /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A9EFBD718425DEE0067BF14 /* Play.png */; };
+		8AA9EE441843BD0800091CFB /* WhitePixel.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AA9EE431843BD0800091CFB /* WhitePixel.png */; };
+		8AA9EE461843CC4300091CFB /* sodas.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AA9EE451843CC4300091CFB /* sodas.png */; };
 		8AD45E251841F5F000FF141F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD45E241841F5F000FF141F /* QuartzCore.framework */; };
 		8AD45E271841F5F000FF141F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD45E261841F5F000FF141F /* OpenGLES.framework */; };
 		8AD45E291841F5F000FF141F /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD45E281841F5F000FF141F /* OpenAL.framework */; };
@@ -197,10 +199,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8A42E31D1843667F00ABBAFC /* Background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Background@2x.png"; path = "Resources/Background@2x.png"; sourceTree = "<group>"; };
+		8A42E31D1843667F00ABBAFC /* Background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Background.png; path = Resources/Background.png; sourceTree = "<group>"; };
 		8A42E32318437CA400ABBAFC /* sling1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sling1.png; path = Resources/sling1.png; sourceTree = "<group>"; };
 		8A42E32418437CA400ABBAFC /* sling2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sling2.png; path = Resources/sling2.png; sourceTree = "<group>"; };
 		8A9EFBD718425DEE0067BF14 /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Play.png; path = Resources/Play.png; sourceTree = "<group>"; };
+		8AA9EE431843BD0800091CFB /* WhitePixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = WhitePixel.png; path = Resources/WhitePixel.png; sourceTree = "<group>"; };
+		8AA9EE451843CC4300091CFB /* sodas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sodas.png; path = Resources/sodas.png; sourceTree = "<group>"; };
 		8AD45E211841F5F000FF141F /* AngryMike.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AngryMike.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AD45E241841F5F000FF141F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8AD45E261841F5F000FF141F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -659,7 +663,9 @@
 		8AD45E391841F5F000FF141F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8A42E31D1843667F00ABBAFC /* Background@2x.png */,
+				8AA9EE451843CC4300091CFB /* sodas.png */,
+				8AA9EE431843BD0800091CFB /* WhitePixel.png */,
+				8A42E31D1843667F00ABBAFC /* Background.png */,
 				8A9EFBD718425DEE0067BF14 /* Play.png */,
 				8A42E32318437CA400ABBAFC /* sling1.png */,
 				8A42E32418437CA400ABBAFC /* sling2.png */,
@@ -1254,6 +1260,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AD45E4B1841F5F000FF141F /* Icon.png in Resources */,
+				8AA9EE461843CC4300091CFB /* sodas.png in Resources */,
 				8A9EFBD818425DEE0067BF14 /* Play.png in Resources */,
 				8AD45FA91841F5F100FF141F /* ChangeLog in Resources */,
 				8AD45E3D1841F5F000FF141F /* Default@2x.png in Resources */,
@@ -1262,10 +1269,11 @@
 				8AD45E3B1841F5F000FF141F /* Default.png in Resources */,
 				8AD45E451841F5F000FF141F /* Icon-Small-50.png in Resources */,
 				8AD45E501841F5F000FF141F /* iTunesArtwork in Resources */,
-				8A42E31E1843667F00ABBAFC /* Background@2x.png in Resources */,
+				8A42E31E1843667F00ABBAFC /* Background.png in Resources */,
 				8AD460691841F5F200FF141F /* blocks.png in Resources */,
 				8A42E32518437CA400ABBAFC /* sling1.png in Resources */,
 				8AD45E491841F5F000FF141F /* Icon-Small@2x.png in Resources */,
+				8AA9EE441843BD0800091CFB /* WhitePixel.png in Resources */,
 				8AD45E411841F5F000FF141F /* Default-Landscape~ipad.png in Resources */,
 				8AD460741842099E00FF141F /* face.png in Resources */,
 				8AD46072184206E700FF141F /* Mike.png in Resources */,

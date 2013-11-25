@@ -28,7 +28,9 @@ enum {
 @interface HelloWorldLayer()
 {
     CCTexture2D *MikeTexture;	// weak ref
+    CCTexture2D *SodasTexture;	// weak ref
     CCTexture2D *BackGroundTexture; //
+    CCTexture2D *WhitePixelTexture;
     
 	b2World* world;					// strong ref
 	GLESDebugDraw *m_debugDraw;		// strong ref
@@ -71,6 +73,7 @@ enum {
         Mikes = [[NSMutableArray alloc]init];
         MikeClicked = false;
         
+        
 		// enable events
 			CGSize size = [[CCDirector sharedDirector] winSize];
 		self.touchEnabled = YES;
@@ -81,8 +84,13 @@ enum {
 		
 
 		MikeTexture = [[CCTextureCache sharedTextureCache] addImage:@"Mike.png"];
-        
+        SodasTexture =[[CCTextureCache sharedTextureCache] addImage:@"sodas.png"];
         BackGroundTexture =[[CCTextureCache sharedTextureCache] addImage:@"Background.png"];
+        
+        WhitePixelTexture = [[CCTextureCache sharedTextureCache] addImage:@"WhitePixel.png"];
+        
+        
+        
         CCSprite* background = [CCSprite spriteWithTexture:BackGroundTexture];
         
         background.position = CGPointMake(size.width/2, size.height/2);//size/2 ; //size
@@ -106,16 +114,27 @@ enum {
         [[self addNewMikeAtPosition:CGPointMake(21.5,146)]setRotation: -22.0f];
         
         
+        [[self addNewSodasAtPosition:CGPointMake(275, 139)] setRotation:-17];
+        [[self addNewSodasAtPosition:CGPointMake(276, 23)] setRotation:3];
+        [[self addNewSodasAtPosition:CGPointMake(407, 129)] setRotation:20];
+        [[self addNewSodasAtPosition:CGPointMake(407, 25)] setRotation: -32];
+        [[self addNewSodasAtPosition:CGPointMake(407, 232)] setRotation:20];
         
-        
-        
+        //包子蓋房子
+        [self createRectangle:CGPointMake(238, 60) withWidth:10 andHeight:90 Rotate:0];
+        [self createRectangle:CGPointMake(318, 60) withWidth:10 andHeight:90 Rotate:0];
+        [self createRectangle:CGPointMake(278, 107) withWidth:100 andHeight:10 Rotate:0];
+        [self createRectangle:CGPointMake(238+130, 60) withWidth:10 andHeight:90 Rotate:0];
+        [self createRectangle:CGPointMake(318+130, 60) withWidth:10 andHeight:90 Rotate:0];
+        [self createRectangle:CGPointMake(278+130, 107) withWidth:100 andHeight:10 Rotate:0];
+        [self createRectangle:CGPointMake(238+130, 60+107) withWidth:10 andHeight:90 Rotate:0];
+        [self createRectangle:CGPointMake(318+130, 60+107) withWidth:10 andHeight:90 Rotate:0];
+        [self createRectangle:CGPointMake(278+130, 107+107) withWidth:100 andHeight:10 Rotate:0];
         
         CCMenuItemLabel *reset = [CCMenuItemFont itemWithString:@"Reset" block:^(id sender){
             [[CCDirector sharedDirector] replaceScene: [CCTransitionFade transitionWithDuration:0.5f scene:[HelloWorldLayer scene]]];
         }];
-        
         reset.scale = 0.5f;
-        
         CCMenu *menu = [CCMenu menuWithItems:reset, nil];
         menu.position = CGPointMake(size.width - 50, size.height - 50);
         [self addChild:menu];
@@ -144,13 +163,11 @@ enum {
 	CGSize s = [[CCDirector sharedDirector] winSize];
 	
 	b2Vec2 gravity;
-	gravity.Set(0.0f, -320/PTM_RATIO);
+	gravity.Set(0.0f, -200/PTM_RATIO);
 	world = new b2World(gravity);
 	
-	
-	// Do we want to let bodies sleep?
+
 	world->SetAllowSleeping(true);
-	
 	world->SetContinuousPhysics(true);
 	
 	m_debugDraw = new GLESDebugDraw( PTM_RATIO );
@@ -208,13 +225,13 @@ enum {
 {
 	[super draw];
 	
-	ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
+	//ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
 	
-	kmGLPushMatrix();
+	//kmGLPushMatrix();
 	
-	world->DrawDebugData();	
+	//world->DrawDebugData();
 	
-	kmGLPopMatrix();
+	//kmGLPopMatrix();
 }
 
 
@@ -226,6 +243,7 @@ enum {
 	//Set up a 1m squared box in the physics world
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_kinematicBody;
+    bodyDef.bullet = true;
 	bodyDef.position.Set(p.x/PTM_RATIO, p.y/PTM_RATIO);
 	b2Body *body = world->CreateBody(&bodyDef);
 	
@@ -239,10 +257,14 @@ enum {
 	fixtureDef.shape = &dynamicMike;	
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.3f;
+    
 	body->CreateFixture(&fixtureDef);
+    
 	
     
 	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:MikeTexture];
+    
+    
 	[self addChild:sprite];
 	
 	[sprite setPTMRatio:PTM_RATIO];
@@ -254,13 +276,89 @@ enum {
     [Mikes addObject:sprite];
     
     return sprite;
+}
 
+-(CCSprite*) addNewSodasAtPosition:(CGPoint)p
+{
+
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+    bodyDef.bullet = true;
+	bodyDef.position.Set(p.x/PTM_RATIO, p.y/PTM_RATIO);
+	b2Body *body = world->CreateBody(&bodyDef);
+	
+	// Define another box shape for our dynamic body.
+    
+	b2CircleShape dynamicSodas;
+    dynamicSodas.m_radius =10.0f/PTM_RATIO;
+    
+	// Define the dynamic body fixture.
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &dynamicSodas;
+	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.3f;
+    
+	body->CreateFixture(&fixtureDef);
+    
+	
+    
+	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:SodasTexture];
+    
+    
+	[self addChild:sprite z:1];
+	
+	[sprite setPTMRatio:PTM_RATIO];
+	[sprite setB2Body:body];
+	[sprite setPosition: ccp( p.x, p.y)];
+    
+    [sprite setScale:0.4f];
+    
+    return sprite;
+}
+
+
+-(CCSprite*) createRectangle:(CGPoint)p withWidth :(float)width andHeight :(float)height Rotate:(float)angle
+{
+    b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position.Set(p.x/PTM_RATIO, p.y/PTM_RATIO);
+    //bodyDef.linearDamping = 0.5f;
+    //bodyDef.angularDamping = 0.5f;
+	b2Body *body = world->CreateBody(&bodyDef);
+	
+	// Define another box shape for our dynamic body.
+    
+	b2PolygonShape rectangle;
+    rectangle.SetAsBox(width/2.0f/PTM_RATIO, height/2.0f/PTM_RATIO);
+    
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &rectangle;
+	fixtureDef.density = 1.0f;
+    
+	fixtureDef.friction = 0.3f;
+	body->CreateFixture(&fixtureDef);
+	
+    
+	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:WhitePixelTexture];
+
+	[self addChild:sprite];
+	
+    sprite.scaleX = width*2;
+    sprite.scaleY = height*2;
+    
+	[sprite setPTMRatio:PTM_RATIO];
+	[sprite setB2Body:body];
+	[sprite setPosition: ccp( p.x, p.y)];
+    [sprite setRotation:angle];
+    [sprite setColor:ccc3(rand()%255,rand()%255,rand()%255)];
+    
+    return sprite;
 }
 
 -(void) update: (ccTime) dt
 {
 	int32 velocityIterations = 8;
-	int32 positionIterations = 1;
+	int32 positionIterations = 3;
 	
 	world->Step(dt, velocityIterations, positionIterations);	
 }
@@ -270,6 +368,9 @@ enum {
     for( UITouch *touch in touches )
     {
         CGPoint location = [self convertTouchToNodeSpace: touch];
+        
+        NSLog(@"location = %f,%f",location.x,location.y);
+        
         CCPhysicsSprite* currentMike =(CCPhysicsSprite*)Mikes[MikeIndex];
         
         if (CGRectContainsPoint(currentMike.boundingBox, location))
@@ -372,7 +473,7 @@ enum {
             float disty = (location.y - SLING_POINT_Y);
 
             
-            b2Vec2 v2 = b2Vec2(-distx,-disty);
+            b2Vec2 v2 = b2Vec2(-distx/3,-disty/3);
             currentMike.b2Body->SetLinearVelocity(v2);
             
             [self LoadNewMike];

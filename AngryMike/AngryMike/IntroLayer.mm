@@ -10,6 +10,7 @@
 // Import the interfaces
 #import "IntroLayer.h"
 #import "HelloWorldLayer.h"
+#import "SimpleAudioEngine.h"
 
 
 #pragma mark - IntroLayer
@@ -33,7 +34,6 @@
 {
 	if( (self=[super init])) {
 		
-        //初始化參數
         self.PlayPressed = false;
         self.touchEnabled = true;
         
@@ -61,6 +61,8 @@
         CCActionInterval* sequence = [CCSequence actions:holdAction,easeUp,easeDown,easeUp,easeDown,holdAction, nil];
         CCAction* repeatAction = [CCRepeatForever actionWithAction:sequence];
         
+        
+
         [label runAction:repeatAction];
 	}
 	
@@ -120,6 +122,10 @@
         [self.PlayButton runAction:scaleUpAction];
         
         [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene]]];
+        
+ 
+  
+
     }
 }
 

@@ -16,8 +16,10 @@
 #pragma mark - IntroLayer
 
 
+
 // HelloWorldLayer implementation
 @implementation IntroLayer
+
 
 
 // Helper class method that creates a Scene with the HelloWorldLayer as the only child.
@@ -40,12 +42,23 @@
         //取得坐標
 		CGSize size = [[CCDirector sharedDirector] winSize];
 
-
         //setting label
         CCLabelTTF *label = [CCLabelTTF labelWithString:@"Angry Mike" fontName:@"Marker Felt" fontSize:32];
 		[label setColor:ccc3(254,222,143)];
 		label.position = ccp( size.width/2, size.height/2 + 40);
 		[self addChild:label z:0];
+        
+        CCActionInterval* scaleUpAction = [CCScaleTo actionWithDuration:0.3 scale:1.2];
+        CCEaseIn* easeUp =[CCEaseOut actionWithAction:scaleUpAction rate:3];
+        
+        CCActionInterval* scaleDownAction = [CCScaleTo actionWithDuration:0.3 scale:1];
+        CCEaseOut* easeDown =[CCEaseIn actionWithAction:scaleDownAction rate:3];
+        
+        CCFiniteTimeAction* holdAction = [CCDelayTime actionWithDuration:2];
+        CCActionInterval* sequence = [CCSequence actions:holdAction,easeUp,easeDown,easeUp,easeDown,holdAction, nil];
+        
+        CCAction* repeatAction = [CCRepeatForever actionWithAction:sequence];
+        [label runAction:repeatAction];
         
         
         self.PlayButton = [CCSprite spriteWithFile:@"Play.png"];
@@ -53,17 +66,10 @@
 		[self addChild: self.PlayButton z:0];
         
         
-        CCActionInterval* scaleUpAction = [CCScaleTo actionWithDuration:0.3 scale:1.2];
-        CCEaseIn* easeUp =[CCEaseOut actionWithAction:scaleUpAction rate:3];
-        CCActionInterval* scaleDownAction = [CCScaleTo actionWithDuration:0.3 scale:1];
-        CCEaseOut* easeDown =[CCEaseIn actionWithAction:scaleDownAction rate:3];
-        CCFiniteTimeAction* holdAction = [CCDelayTime actionWithDuration:2];
-        CCActionInterval* sequence = [CCSequence actions:holdAction,easeUp,easeDown,easeUp,easeDown,holdAction, nil];
-        CCAction* repeatAction = [CCRepeatForever actionWithAction:sequence];
         
         
 
-        [label runAction:repeatAction];
+        
 	}
 	
 	return self;
@@ -90,27 +96,10 @@
     CCActionInterval* scaleUpAction = [CCScaleTo actionWithDuration:0.1 scale:0.9];
     
     [self.PlayButton runAction:scaleUpAction];
-    
-    
 }
 
 - (void)ccTouchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-//    NSLog(@"here");
-//    
-//    for( UITouch *touch in touches ) {
-//        
-//        CGPoint touchLocation = [touch locationInView: [touch view]];
-//        CGPoint prevLocation = [touch previousLocationInView: [touch view]];
-//        
-//        touchLocation = [[CCDirector sharedDirector] convertToGL: touchLocation];
-//        prevLocation = [[CCDirector sharedDirector] convertToGL: prevLocation];
-//        
-//        CGPoint diff = ccpSub(touchLocation,prevLocation);
-//        
-//        self.position  = ccpAdd(self.position,diff);
-//        
-//	}
 }
 
 - (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -122,10 +111,6 @@
         [self.PlayButton runAction:scaleUpAction];
         
         [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:1.0 scene:[HelloWorldLayer scene]]];
-        
- 
-  
-
     }
 }
 

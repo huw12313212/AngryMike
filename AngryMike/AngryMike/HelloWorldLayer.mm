@@ -27,13 +27,12 @@ enum {
 
 @interface HelloWorldLayer()
 {
-    CCTexture2D *MikeTexture;	// weak ref
-    CCTexture2D *SodasTexture;	// weak ref
-    CCTexture2D *BackGroundTexture; //
+    CCTexture2D *MikeTexture;
+    CCTexture2D *SodasTexture;
     CCTexture2D *WhitePixelTexture;
     
-	b2World* world;					// strong ref
-	GLESDebugDraw *m_debugDraw;		// strong ref
+	b2World* world;
+	GLESDebugDraw *m_debugDraw;
     
     NSMutableArray* Mikes;
     int MikeIndex;
@@ -74,10 +73,16 @@ enum {
         MikeClicked = false;
         
         
-		// enable events
-			CGSize size = [[CCDirector sharedDirector] winSize];
+		
+        CGSize size = [[CCDirector sharedDirector] winSize];
+        
+        CCSprite* background = [CCSprite spriteWithFile:@"Background.png"];
+        background.position = CGPointMake(size.width/2, size.height/2);
+        [self addChild:background z:-1];
+        
+        
+        // enable events
 		self.touchEnabled = YES;
-		self.accelerometerEnabled = YES;
 		
 		// init physics
 		[self initPhysics];
@@ -85,23 +90,15 @@ enum {
 
 		MikeTexture = [[CCTextureCache sharedTextureCache] addImage:@"Mike.png"];
         SodasTexture =[[CCTextureCache sharedTextureCache] addImage:@"sodas.png"];
-        BackGroundTexture =[[CCTextureCache sharedTextureCache] addImage:@"Background.png"];
         
         WhitePixelTexture = [[CCTextureCache sharedTextureCache] addImage:@"WhitePixel.png"];
         
-        
-        
-        CCSprite* background = [CCSprite spriteWithTexture:BackGroundTexture];
-        
-        background.position = CGPointMake(size.width/2, size.height/2);//size/2 ; //size
-        [self addChild:background z:-1];
-        
+    
         
         CCSprite* sling1 = [CCSprite spriteWithFile:@"sling1.png"];
         CCSprite* sling2 = [CCSprite spriteWithFile:@"sling2.png"];
         
         [self addChild:sling1 z:2];
-        
         [self addChild:sling2 z:0];
         
         sling1.position = CGPointMake(66, 155);
@@ -130,6 +127,7 @@ enum {
         [self createRectangle:CGPointMake(238+130, 60+107) withWidth:10 andHeight:90 Rotate:0];
         [self createRectangle:CGPointMake(318+130, 60+107) withWidth:10 andHeight:90 Rotate:0];
         [self createRectangle:CGPointMake(278+130, 107+107) withWidth:100 andHeight:10 Rotate:0];
+        
         
         CCMenuItemLabel *reset = [CCMenuItemFont itemWithString:@"Reset" block:^(id sender){
             [[CCDirector sharedDirector] replaceScene: [CCTransitionFade transitionWithDuration:0.5f scene:[HelloWorldLayer scene]]];
@@ -160,44 +158,24 @@ enum {
 -(void) initPhysics
 {
 	
-	CGSize s = [[CCDirector sharedDirector] winSize];
+
 	
 	b2Vec2 gravity;
 	gravity.Set(0.0f, -200/PTM_RATIO);
 	world = new b2World(gravity);
 	
-
 	world->SetAllowSleeping(true);
 	world->SetContinuousPhysics(true);
 	
-	m_debugDraw = new GLESDebugDraw( PTM_RATIO );
-	world->SetDebugDraw(m_debugDraw);
-	
-	uint32 flags = 0;
-	flags += b2Draw::e_shapeBit;
-	//		flags += b2Draw::e_jointBit;
-	//		flags += b2Draw::e_aabbBit;
-	//		flags += b2Draw::e_pairBit;
-	//		flags += b2Draw::e_centerOfMassBit;
-	m_debugDraw->SetFlags(flags);		
-	
-	
-	// Define the ground body.
-	b2BodyDef groundBodyDef;
-	groundBodyDef.position.Set(0, 0); // bottom-left corner
-	
-	// Call the body factory which allocates memory for the ground body
-	// from a pool and creates the ground box shape (also from a pool).
-	// The body is also added to the world.
-	b2Body* groundBody = world->CreateBody(&groundBodyDef);
-	
-	// Define the ground box shape.
-	b2EdgeShape groundBox;		
-	
-	// bottom
     
-    NSLog(@"%f,%f",s.width,s.height);
-	
+
+    CGSize s = [[CCDirector sharedDirector] winSize];
+	b2BodyDef groundBodyDef;
+
+	b2Body* groundBody = world->CreateBody(&groundBodyDef);
+	b2EdgeShape groundBox;
+    
+    //Gound
 	groundBox.Set(b2Vec2(0.0f/PTM_RATIO,135.0f/PTM_RATIO), b2Vec2(76.0f/PTM_RATIO,135.0f/PTM_RATIO));
 	groundBody->CreateFixture(&groundBox,0);
 
@@ -206,7 +184,6 @@ enum {
 
 	groundBox.Set(b2Vec2(152.0f/PTM_RATIO/2,(640.0f-610.0f)/PTM_RATIO/2), b2Vec2(959.0f/PTM_RATIO/2,(640.0f-610.0f)/PTM_RATIO/2));
 	groundBody->CreateFixture(&groundBox,0);
-    
     
     // top
 	groundBox.Set(b2Vec2(0,s.height/PTM_RATIO), b2Vec2(s.width/PTM_RATIO,s.height/PTM_RATIO));
@@ -219,52 +196,49 @@ enum {
 	// right
 	groundBox.Set(b2Vec2(s.width/PTM_RATIO,s.height/PTM_RATIO), b2Vec2(s.width/PTM_RATIO,0));
 	groundBody->CreateFixture(&groundBox,0);
+    
+    
+    m_debugDraw = new GLESDebugDraw( PTM_RATIO );
+	world->SetDebugDraw(m_debugDraw);
+	uint32 flags = 0;
+    flags += b2Draw::e_shapeBit;
+	m_debugDraw->SetFlags(flags);
+	
 }
 
 -(void) draw
 {
 	[super draw];
 	
-	//ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
+	ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
 	
-	//kmGLPushMatrix();
+	kmGLPushMatrix();
 	
-	//world->DrawDebugData();
+	world->DrawDebugData();
 	
-	//kmGLPopMatrix();
+	kmGLPopMatrix();
 }
-
-
 
 -(CCSprite*) addNewMikeAtPosition:(CGPoint)p
 {
-	CCLOG(@"Add sprite %0.2f x %02.f",p.x,p.y);
-	// Define the dynamic body.
-	//Set up a 1m squared box in the physics world
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_kinematicBody;
     bodyDef.bullet = true;
 	bodyDef.position.Set(p.x/PTM_RATIO, p.y/PTM_RATIO);
 	b2Body *body = world->CreateBody(&bodyDef);
-	
-	// Define another box shape for our dynamic body.
-    
-	b2CircleShape dynamicMike;
-    dynamicMike.m_radius =10.0f/PTM_RATIO;
+
+	b2CircleShape Mike;
+    Mike.m_radius =10.0f/PTM_RATIO;
 
 	// Define the dynamic body fixture.
 	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &dynamicMike;	
+	fixtureDef.shape = &Mike;
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.3f;
     
 	body->CreateFixture(&fixtureDef);
     
-	
-    
-	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:MikeTexture];
-    
-    
+    CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:MikeTexture];
 	[self addChild:sprite];
 	
 	[sprite setPTMRatio:PTM_RATIO];
@@ -272,15 +246,12 @@ enum {
 	[sprite setPosition: ccp( p.x, p.y)];
     
     [sprite setScale:0.8f];
-    
     [Mikes addObject:sprite];
-    
     return sprite;
 }
 
 -(CCSprite*) addNewSodasAtPosition:(CGPoint)p
 {
-
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
     bodyDef.bullet = true;
@@ -300,10 +271,7 @@ enum {
     
 	body->CreateFixture(&fixtureDef);
     
-	
-    
 	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:SodasTexture];
-    
     
 	[self addChild:sprite z:1];
 	
@@ -322,11 +290,8 @@ enum {
     b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(p.x/PTM_RATIO, p.y/PTM_RATIO);
-    //bodyDef.linearDamping = 0.5f;
-    //bodyDef.angularDamping = 0.5f;
 	b2Body *body = world->CreateBody(&bodyDef);
 	
-	// Define another box shape for our dynamic body.
     
 	b2PolygonShape rectangle;
     rectangle.SetAsBox(width/2.0f/PTM_RATIO, height/2.0f/PTM_RATIO);
@@ -338,7 +303,6 @@ enum {
 	fixtureDef.friction = 0.3f;
 	body->CreateFixture(&fixtureDef);
 	
-    
 	CCPhysicsSprite *sprite = [CCPhysicsSprite spriteWithTexture:WhitePixelTexture];
 
 	[self addChild:sprite];
@@ -404,6 +368,8 @@ enum {
             
             if(dist > SLING_RADIO)
             {
+                NSLog(@"case1");
+                
                 float normalizeX = distx / dist;
                 float normalizeY = disty / dist;
                 
@@ -412,33 +378,14 @@ enum {
                 
                  currentMike.position = CGPointMake(SLING_POINT_X+newX, SLING_POINT_Y+newY);
                 
-                NSLog(@"case1");
             }
             else
             {
                  NSLog(@"case2");
                  currentMike.position = location;
             }
-        
-       
         }
     }
-    
-    //    NSLog(@"here");
-    //
-    //
-    //
-    //        CGPoint touchLocation = [touch locationInView: [touch view]];
-    //        CGPoint prevLocation = [touch previousLocationInView: [touch view]];
-    //
-    //        touchLocation = [[CCDirector sharedDirector] convertToGL: touchLocation];
-    //        prevLocation = [[CCDirector sharedDirector] convertToGL: prevLocation];
-    //
-    //        CGPoint diff = ccpSub(touchLocation,prevLocation);
-    //
-    //        self.position  = ccpAdd(self.position,diff);
-    //        
-    //	}
 }
 
 -(void)LoadNewMike
